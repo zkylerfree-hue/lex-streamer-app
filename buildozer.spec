@@ -42,6 +42,8 @@ android.androidx = True
 
 # (bool) Automatic acceptance of SDK license
 android.accept_sdk_license = True
+android.ndk = 25b
+
 
 [buildozer]
 
