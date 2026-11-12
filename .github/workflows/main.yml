@@ -36,20 +36,15 @@ jobs:
             libswscale-dev \
             libavformat-dev \
             libavcodec-dev \
-            zlib1g-dev
+            zlib1g-dev \
+            libffi-dev \
+            libssl-dev
 
     - name: Install Buildozer and Cython
       run: |
         pip install --upgrade pip
-        pip install --user Cython==0.29.36 buildozer
-
-    - name: Cache Buildozer Global Directory
-      uses: actions/cache@v4
-      with:
-        path: ~/.buildozer
-        key: buildozer-${{ hashFiles('buildozer.spec') }}-v2
-        restore-keys: |
-          buildozer-
+        pip install --upgrade Cython==0.29.36
+        pip install --upgrade buildozer
 
     - name: Build with Buildozer
       run: |
