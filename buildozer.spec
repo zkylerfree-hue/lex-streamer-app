@@ -18,6 +18,9 @@ source.include_exts = py,png,jpg,kv,atlas
 # (list) The list of source directories to include
 source.dir = .
 
+
+
+
 # (list) Application requirements
 requirements = python3,kivy
 
@@ -30,6 +33,8 @@ orientation = portrait
 
 # (list) Permissions
 android.permissions = INTERNET
+
+
 
 # (int) Target API, should be as high as possible.
 android.api = 31
@@ -52,3 +57,7 @@ log_level = 2
 
 # (int) Display warning if buildozer is run as root (0 = False, 1 = True)
 warn_on_root = 1
+
+
+
+
