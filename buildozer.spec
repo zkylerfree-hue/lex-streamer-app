@@ -25,7 +25,6 @@ source.exclude_dirs = tests, bin, venv
 version = 0.1
 
 # (list) Application requirements
-# تم تحديد إصدار بايثون ومكتبة أوبن إس إس إل لضمان الاستقرار وعدم التعليق
 requirements = python3==3.10.12,kivy,openssl,requests
 
 # (str) Supported orientations
@@ -38,24 +37,4 @@ fullscreen = 0
 android.permissions = INTERNET, ACCESS_NETWORK_STATE
 
 # (str) Target API version for your application
-android.api = 33
-
-# (str) Minimum API version
-android.minapi = 21
-
-# (str) Android NDK version to use
-android.ndk = 25b
-
-# (list) The Android archs to build for
-android.archs = arm64-v8a
-
-[buildozer]
-
-# (int) Log level (0 = error only, 1 = info, 2 = debug)
-log_level = 2
-
-# (int) Display warning if buildozer is run as root (0 = False, 1 = True)
-warn_root = 1
-
-# (str) Path to build artifact storage, absolute or relative to spec file
-bin_dir = ./bin
+android.api = 
