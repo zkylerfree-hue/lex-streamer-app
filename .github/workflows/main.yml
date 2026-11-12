@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build: packages
+  build:
     runs-on: ubuntu-22.04
 
     steps:
@@ -29,7 +29,7 @@ jobs:
       - name: Install Buildozer and Cython
         run: |
           pip install --upgrade pip
-          pip install cython==0.29.36
+          pip install cython==0.29.33
           pip install --upgrade buildozer
 
       - name: Clone python-for-android locally to prevent network timeout
