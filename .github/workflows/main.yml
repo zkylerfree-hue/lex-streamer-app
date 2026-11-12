@@ -32,24 +32,20 @@ jobs:
           pip install cython==0.29.33
           pip install --upgrade buildozer
 
-      - name: Clone python-for-android locally to prevent network timeout
+      - name: Clone python-for-android locally
         run: |
           git clone https://github.com/kivy/python-for-android.git -b master ~/.local/share/python-for-android || true
 
-      - name: Setup Android SDK and Accept Licenses Correctly
+      - name: Configure Buildozer and Accept Licenses
         run: |
-          # إنشاء مجلدات أندرويد في المسار الرئيسي للجهاز
-          mkdir -p $HOME/.android
-          echo "y" > $HOME/.android/repositories.cfg
-
-          # إنشاء هيكل الـ SDK الوهمي ليتم قبول التراخيص داخله
-          ANDROID_HOME=$HOME/.buildozer/android/platform/android-sdk
-          mkdir -p $ANDROID_HOME/licenses
+          mkdir -p ~/.android
+          echo "y" > ~/.android/repositories.cfg
           
-          # وضع التراخيص المعتمدة رسمياً بصيغتها الصحيحة
-          echo "8933bac1632f8a780564a75267b148f7389c130d" > $ANDROID_HOME/licenses/android-sdk-license
-          echo "24333f8a43b682d23f5bbf91d956f1ffd515f3fd" >> $ANDROID_HOME/licenses/android-sdk-license
-          echo "d56f5187479451eabf01fb78af6dfcb139a648b0" >> $ANDROID_HOME/licenses/android-sdk-license
+          # إعداد المجلدات الافتراضية لـ Buildozer
+          mkdir -p ~/.buildozer/android/platform/android-sdk/licenses
+          echo "8933bac1632f8a780564a75267b148f7389c130d" > ~/.buildozer/android/platform/android-sdk/licenses/android-sdk-license
+          echo "24333f8a43b682d23f5bbf91d956f1ffd515f3fd" >> ~/.buildozer/android/platform/android-sdk/licenses/android-sdk-license
+          echo "d56f5187479451eabf01fb78af6dfcb139a648b0" >> ~/.buildozer/android/platform/android-sdk/licenses/android-sdk-license
 
       - name: Build with Buildozer
         run: |
