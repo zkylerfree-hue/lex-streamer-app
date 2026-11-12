@@ -32,16 +32,15 @@ jobs:
           pip install cython==0.29.33
           pip install --upgrade buildozer
 
-      - name: Clone python-for-android locally
+      - name: Force Local python-for-android Setup
         run: |
-          git clone https://github.com/kivy/python-for-android.git -b master ~/.local/share/python-for-android || true
+          rm -rf ~/.local/share/python-for-android
+          git clone --depth 1 https://github.com/kivy/python-for-android.git ~/.local/share/python-for-android
 
-      - name: Configure Buildozer and Accept Licenses
+      - name: Accept Android SDK Licenses Manually
         run: |
           mkdir -p ~/.android
           echo "y" > ~/.android/repositories.cfg
-          
-          # إعداد المجلدات الافتراضية لـ Buildozer
           mkdir -p ~/.buildozer/android/platform/android-sdk/licenses
           echo "8933bac1632f8a780564a75267b148f7389c130d" > ~/.buildozer/android/platform/android-sdk/licenses/android-sdk-license
           echo "24333f8a43b682d23f5bbf91d956f1ffd515f3fd" >> ~/.buildozer/android/platform/android-sdk/licenses/android-sdk-license
