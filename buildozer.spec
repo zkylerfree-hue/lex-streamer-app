@@ -9,6 +9,9 @@ package.name = lexstreamer
 # (str) Package domain (needed for android packaging)
 package.domain = org.lex
 
+# (str) Source directory where your app lives
+source.dir = .
+
 # (list) Source files to include (let it empty to include all files)
 source.include_exts = py,png,jpg,kv,atlas
 
@@ -18,15 +21,15 @@ source.exclude_exts = spec
 # (list) List of directory to exclude (let it empty to exclude nothing)
 source.exclude_dirs = tests, bin, venv
 
+# (str) Application versioning (version numbering)
+version = 0.1
+
 # (list) Application requirements
-# تم تحديد إصدار بايثون مستقر لتفادي مشاكل البناء مع النسخ التجريبية
+# تم تحديد إصدار بايثون ومكتبة أوبن إس إس إل لضمان الاستقرار وعدم التعليق
 requirements = python3==3.10.12,kivy,openssl,requests
 
 # (str) Supported orientations
 orientation = portrait
-
-# (list) The orientation for the app
-# orientation = landscape
 
 # (bool) Indicate if the application should be fullscreen or not
 fullscreen = 0
@@ -34,31 +37,25 @@ fullscreen = 0
 # (list) Permissions
 android.permissions = INTERNET, ACCESS_NETWORK_STATE
 
-# (str) Supported orientations (default to landscape for tablets and portrait for phones)
-# supported_orientations = 1,2,3,4
+# (str) Target API version for your application
+android.api = 33
 
-# (list) List of extra java jar files to add
-# android.add_jars = foo.jar,bar.jar
+# (str) Minimum API version
+android.minapi = 21
 
-# (list) List of java files to add to the android project (can be .java or .dir)
-# android.add_src =
+# (str) Android NDK version to use
+android.ndk = 25b
 
-# (list) Android AAR archives to add
-# android.add_aar =
+# (list) The Android archs to build for
+android.archs = arm64-v8a
 
-# (list) Gradle dependencies to add
-# android.gradle_dependencies =
+[buildozer]
 
-# (string) 
-# android.ant_vars =
+# (int) Log level (0 = error only, 1 = info, 2 = debug)
+log_level = 2
 
-# (list) 
-# android.setup_py_dirs =
+# (int) Display warning if buildozer is run as root (0 = False, 1 = True)
+warn_root = 1
 
-# (str) 
-# android.manifest.intent_filters =
-
-# (str) 
-# android.manifest.application_attributes =
-
-# (str
+# (str) Path to build artifact storage, absolute or relative to spec file
+bin_dir = ./bin
