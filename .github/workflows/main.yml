@@ -2,8 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [ main ]
-  workflow_dispatch:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
 
 jobs:
   build:
@@ -22,43 +23,40 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install -y \
-            git \
-            zip \
-            unzip \
-            autoconf \
-            libtool \
-            pkg-config \
-            zlib1g-dev \
-            libncurses5-dev \
-            libncursesw5-dev \
-            libffi-dev \
-            libssl-dev \
+            python3-pip \
             build-essential \
-            libltdl-dev
+            git \
+            python3-dev \
+            ffmpeg \
+            libsdl2-dev \
+            libsdl2-image-dev \
+            libsdl2-mixer-dev \
+            libsdl2-ttf-dev \
+            libportmidi-dev \
+            libswscale-dev \
+            libavformat-dev \
+            libavcodec-dev \
+            zlib1g-dev
 
     - name: Install Buildozer and Cython
       run: |
         pip install --upgrade pip
-        pip install --upgrade cython==0.29.36 buildozer
+        pip install --user Cython==0.29.36 buildozer
 
     - name: Cache Buildozer Global Directory
       uses: actions/cache@v3
       with:
-        path: |
-          .buildozer
-          ~/.buildozer
-        key: ${{ runner.os }}-buildozer-${{ hashFiles('buildozer.spec') }}
+        path: ~/.buildozer
+        key: buildozer-${{ hashFiles('buildozer.spec') }}
         restore-keys: |
-          ${{ runner.os }}-buildozer-
+          buildozer-
 
     - name: Build with Buildozer
       run: |
-        mkdir -p ~/.android
-        touch ~/.android/repositories.cfg
-        yes | buildozer -v android debug
+        buildozer -v android debug
 
     - name: Upload APK Artifact
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v3
       with:
         name: package
         path: bin/*.apk
