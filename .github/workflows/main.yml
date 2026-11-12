@@ -43,16 +43,11 @@ jobs:
           pip install cython==0.29.36
           pip install buildozer
 
-      # هذه الخطوة هي الحل النهائي: الموافقة المسبقة على رخص Android SDK لتجنب التوقف
       - name: Accept Android SDK licenses
         run: |
           mkdir -p ~/.android
-          echo "y" > ~/.android/repositories.cfg
-          # قبول تراخيص أدوات البناء تلقائياً
-          ANDROID_HOME=$HOME/.android
-          mkdir -p $ANDROID_HOME/licenses
-          echo -e "\n8933bac1632f8a780564a75267b148f7389c130d" > $ANDROID_HOME/licenses/android-sdk-license
-          echo -e "\n24333f8a43b682d23f5bbf91d956f1ffd515f3fd" >> $ANDROID_HOME/licenses/android-sdk-license
+          sdkmanager --version || true
+          yes | sdkmanager --licenses || true
 
       - name: Build with Buildozer
         run: |
