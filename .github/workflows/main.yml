@@ -36,15 +36,20 @@ jobs:
         run: |
           git clone https://github.com/kivy/python-for-android.git -b master ~/.local/share/python-for-android || true
 
-      - name: Accept Android SDK Licenses Manually
+      - name: Setup Android SDK and Accept Licenses Correctly
         run: |
-          mkdir -p ~/.android
-          echo "y" > ~/.android/repositories.cfg
-          ANDROID_HOME=$HOME/.android
+          # إنشاء مجلدات أندرويد في المسار الرئيسي للجهاز
+          mkdir -p $HOME/.android
+          echo "y" > $HOME/.android/repositories.cfg
+
+          # إنشاء هيكل الـ SDK الوهمي ليتم قبول التراخيص داخله
+          ANDROID_HOME=$HOME/.buildozer/android/platform/android-sdk
           mkdir -p $ANDROID_HOME/licenses
-          echo -e "\n8933bac1632f8a780564a75267b148f7389c130d" > $ANDROID_HOME/licenses/android-sdk-license
-          echo -e "\n24333f8a43b682d23f5bbf91d956f1ffd515f3fd" >> $ANDROID_HOME/licenses/android-sdk-license
-          echo -e "\nd56f5187479451eabf01fb78af6dfcb139a648b0" >> $ANDROID_HOME/licenses/android-sdk-license
+          
+          # وضع التراخيص المعتمدة رسمياً بصيغتها الصحيحة
+          echo "8933bac1632f8a780564a75267b148f7389c130d" > $ANDROID_HOME/licenses/android-sdk-license
+          echo "24333f8a43b682d23f5bbf91d956f1ffd515f3fd" >> $ANDROID_HOME/licenses/android-sdk-license
+          echo "d56f5187479451eabf01fb78af6dfcb139a648b0" >> $ANDROID_HOME/licenses/android-sdk-license
 
       - name: Build with Buildozer
         run: |
