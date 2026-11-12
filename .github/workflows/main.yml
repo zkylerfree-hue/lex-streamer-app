@@ -18,6 +18,19 @@ jobs:
         with:
           python-version: '3.10'
 
+      # إعادة تفعيل الـ Cache مع مفتاح جديد لضمان استقرار التحميل وتجنب انقطاع الاتصال
+      - name: Cache Buildozer global directory
+        uses: actions/cache@v3
+        with:
+          path: |
+            .buildozer
+            ~/.gradle
+            ~/.local/share/python-for-android
+          key: ${{ runner.os }}-buildozer-cache-v3-${{ hashFiles('buildozer.spec') }}
+          restore-keys: |
+            ${{ runner.os }}-buildozer-cache-v3-
+            ${{ runner.os }}-buildozer-
+
       - name: Install Dependencies
         run: |
           sudo apt-get update
@@ -30,7 +43,7 @@ jobs:
         run: |
           pip install --upgrade pip
           pip install cython==0.29.36
-          pip install --upgrade git+https://github.com/kivy/buildozer.git@master
+          pip install buildozer
 
       - name: Accept Android SDK Licenses Manually
         run: |
