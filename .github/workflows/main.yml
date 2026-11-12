@@ -1,4 +1,4 @@
-name: Build APK
+name: CI
 
 on:
   push:
@@ -7,57 +7,56 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+    - name: Checkout
+      uses: actions/checkout@v3
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
 
-      - name: Install System Dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y \
-            git zip unzip openjdk-17-jdk python3-pip autoconf libtool pkg-config \
-            zlib1g-dev libncurses5-dev libncursesw5-dev libreadline-dev libsqlite3-dev \
-            libssl-dev llvm libffi-dev libbz2-dev build-essential
+    - name: Install Dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y \
+            git \
+            zip \
+            unzip \
+            autoconf \
+            libtool \
+            pkg-config \
+            zlib1g-dev \
+            libncurses5-dev \
+            libncursesw5-dev \
+            libtinfo5 \
+            libffi-dev \
+            libssl-dev \
+            build-essential \
+            libltdl-dev
 
-      - name: Install Buildozer and Cython
-        run: |
-          pip install --upgrade pip
-          pip install cython==0.29.33
-          pip install --upgrade buildozer
+    - name: Install Buildozer and Cython
+      run: |
+        pip install --upgrade pip
+        pip install --upgrade cython==0.29.36 buildozer
 
-      - name: Setup Android SDK and Correct Directory Structure
-        run: |
-          # تحديد المسار الدقيق الذي يعتمد عليه Buildozer للـ SDK
-          SDK_DIR="$HOME/.buildozer/android/platform/android-sdk"
-          mkdir -p $SDK_DIR/cmdline-tools/latest
-          
-          # تحميل أدوات سطر الأوامر الرسمية من أندرويد
-          wget https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip -O cmdline-tools.zip
-          unzip -q cmdline-tools.zip -d temp-tools
-          
-          # نقل محتويات الأدوات بدقة إلى مجلد latest لتجنب خطأ عدم توفر sdkmanager
-          cp -r temp-tools/cmdline-tools/* $SDK_DIR/cmdline-tools/latest/
-          rm -rf cmdline-tools.zip temp-tools
+    - name: Cache Buildozer Global Directory
+      uses: actions/cache@v3
+      with:
+        path: |
+          .buildozer
+          ~/.buildozer
+        key: ${{ runner.os }}-buildozer-${{ hashFiles('buildozer.spec') }}
+        restore-keys: |
+          ${{ runner.os }}-buildozer-
 
-          # إنشاء وقبول تراخيص أندرويد رسمياً داخل المجلد الصحيح
-          mkdir -p $SDK_DIR/licenses
-          echo "8933bac1632f8a780564a75267b148f7389c130d" > $SDK_DIR/licenses/android-sdk-license
-          echo "24333f8a43b682d23f5bbf91d956f1ffd515f3fd" >> $SDK_DIR/licenses/android-sdk-license
-          echo "d56f5187479451eabf01fb78af6dfcb139a648b0" >> $SDK_DIR/licenses/android-sdk-license
+    - name: Build with Buildozer
+      run: yes | buildozer -v android debug
 
-      - name: Build with Buildozer
-        run: |
-          buildozer -v android debug
-
-      - name: Upload APK Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: package
-          path: bin/*.apk
+    - name: Upload APK Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: package
+        path: bin/*.apk
