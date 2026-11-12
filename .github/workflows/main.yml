@@ -1,0 +1,53 @@
+name: Build Android APK
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            git zip unzip openjdk-17-jdk python3-pip autoconf libtool pkg-config \
+            zlib1g-dev libncurses5-dev libncursesw5-dev libreadline-dev libsqlite3-dev \
+            libssl-dev llvm libffi-dev libbz2-dev build-essential
+
+      - name: Install Buildozer and Cython
+        run: |
+          pip install --upgrade pip
+          pip install cython==0.29.36
+          pip install --upgrade git+https://github.com/kivy/buildozer.git@master
+
+      - name: Accept Android SDK Licenses Manually
+        run: |
+          mkdir -p ~/.android
+          echo "y" > ~/.android/repositories.cfg
+          ANDROID_HOME=$HOME/.android
+          mkdir -p $ANDROID_HOME/licenses
+          echo -e "\n8933bac1632f8a780564a75267b148f7389c130d" > $ANDROID_HOME/licenses/android-sdk-license
+          echo -e "\n24333f8a43b682d23f5bbf91d956f1ffd515f3fd" >> $ANDROID_HOME/licenses/android-sdk-license
+          echo -e "\nd56f5187479451eabf01fb78af6dfcb139a648b0" >> $ANDROID_HOME/licenses/android-sdk-license
+
+      - name: Build with Buildozer
+        run: |
+          buildozer -v android debug
+
+      - name: Upload APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: package
+          path: bin/*.apk
