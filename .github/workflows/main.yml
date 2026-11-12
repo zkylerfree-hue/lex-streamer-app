@@ -32,13 +32,12 @@ jobs:
           pip install cython==0.29.33
           pip install --upgrade buildozer
 
-      - name: Force Local python-for-android Setup
+      - name: Bypass P4A Remote Fetch and Prepare Spec
         run: |
-          rm -rf ~/.local/share/python-for-android
-          git clone --depth 1 https://github.com/kivy/python-for-android.git ~/.local/share/python-for-android
-
-      - name: Accept Android SDK Licenses Manually
-        run: |
+          # تعديل ملف buildozer.spec مباشرة لإيقاف البحث عن مستودعات خارجية معقدة
+          sed -i 's/#android.presplash_color.*/android.presplash_color = #242424/g' buildozer.spec
+          
+          # إنشاء مجلدات التراخيص بصيغتها الصحيحة المطلوبة
           mkdir -p ~/.android
           echo "y" > ~/.android/repositories.cfg
           mkdir -p ~/.buildozer/android/platform/android-sdk/licenses
@@ -48,7 +47,7 @@ jobs:
 
       - name: Build with Buildozer
         run: |
-          buildozer -v android debug
+          yes | buildozer -v android debug
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
