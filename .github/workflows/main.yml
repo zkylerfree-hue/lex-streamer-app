@@ -25,7 +25,7 @@ jobs:
             .buildozer
             ~/.gradle
             ~/.local/share/python-for-android
-          key: ${{ runner.os }}-buildozer-v4-${{ hashFiles('buildozer.spec') }}
+          key: ${{ runner.os }}-buildozer-v5-${{ hashFiles('buildozer.spec') }}
           restore-keys: |
             ${{ runner.os }}-buildozer-
 
@@ -44,15 +44,22 @@ jobs:
           pip install --upgrade buildozer
           pip install --upgrade python-for-android
 
+      - name: Install Android SDK Commandline Tools
+        run: |
+          ANDROID_SDK_ROOT=$HOME/android-sdk
+          mkdir -p $ANDROID_SDK_ROOT/cmdline-tools
+          wget https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip -O cmdline-tools.zip
+          unzip -q cmdline-tools.zip -d temp-tools
+          mv temp-tools/cmdline-tools $ANDROID_SDK_ROOT/cmdline-tools/latest
+          rm -rf cmdline-tools.zip temp-tools
+          echo "ANDROID_HOME=$ANDROID_SDK_ROOT" >> $GITHUB_ENV
+          echo "$ANDROID_SDK_ROOT/cmdline-tools/latest/bin" >> $GITHUB_PATH
+          echo "$ANDROID_SDK_ROOT/platform-tools" >> $GITHUB_PATH
+
       - name: Accept Android SDK Licenses Manually
         run: |
-          mkdir -p ~/.android
-          echo "y" > ~/.android/repositories.cfg
-          ANDROID_HOME=$HOME/.android
-          mkdir -p $ANDROID_HOME/licenses
-          echo -e "\n8933bac1632f8a780564a75267b148f7389c130d" > $ANDROID_HOME/licenses/android-sdk-license
-          echo -e "\n24333f8a43b682d23f5bbf91d956f1ffd515f3fd" >> $ANDROID_HOME/licenses/android-sdk-license
-          echo -e "\nd56f5187479451eabf01fb78af6dfcb139a648b0" >> $ANDROID_HOME/licenses/android-sdk-license
+          yes | sdkmanager --licenses || true
+          sdkmanager "platform-tools" "platforms;android-31" "build-tools;31.0.0" || true
 
       - name: Build with Buildozer
         run: |
@@ -63,4 +70,3 @@ jobs:
         with:
           name: package
           path: bin/*.apk
-          
